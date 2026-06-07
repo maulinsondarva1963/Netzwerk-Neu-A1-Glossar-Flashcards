@@ -3,572 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>German B2/C1 Verbs Mastery</title>
+    <title>German A1 Flashcards - Chapter 1</title>
+    <!-- We load Tailwind CSS directly from the web for easy styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-
-        :root {
-            --primary: #FF6B6B;
-            --secondary: #4ECDC4;
-            --accent: #FFE66D;
-            --dark: #292F36;
-            --light: #F7FFF7;
-            --bg-gradient: linear-gradient(135deg, #FF6B6B, #4ECDC4);
-        }
-
-        body {
-            font-family: 'Nunito', sans-serif;
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            color: var(--dark);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .app-container {
-            max-width: 600px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            margin-top: 2vh;
-            box-sizing: border-box;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--dark);
-            margin-top: 0;
-            font-weight: 900;
-        }
-
-        /* TABS */
-        .tabs {
-            display: flex;
-            justify-content: space-around;
-            background: #eee;
-            border-radius: 30px;
-            padding: 5px;
-            margin-bottom: 30px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 25px;
-            background: transparent;
-            color: #666;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            background: var(--dark);
-            color: var(--light);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        /* SECTIONS */
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.4s; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* FLASHCARDS */
-        .flashcard-wrapper {
+        /* Custom CSS for the 3D flipping effect */
+        .perspective-1000 {
             perspective: 1000px;
-            width: 100%;
-            height: 300px;
-            margin: 0 auto 20px;
-            cursor: pointer;
         }
-
-        .flashcard {
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+        .transform-style-preserve-3d {
             transform-style: preserve-3d;
-            position: relative;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-
-        .flashcard.flipped { transform: rotateY(180deg); }
-
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
+        .backface-hidden {
             backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 20px;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
         }
-
-        .card-front {
-            background: white;
-            color: var(--primary);
-            border: 3px solid var(--primary);
-        }
-
-        .card-front .word { font-size: 2.5em; font-weight: 900; }
-        .card-front .hint { font-size: 0.9em; color: #888; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
-
-        .card-back {
-            background: var(--primary);
-            color: white;
+        .rotate-y-180 {
             transform: rotateY(180deg);
-        }
-
-        .card-back .word { font-size: 2em; font-weight: 700; }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-btn {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 12px;
-            background: #eee;
-            color: var(--dark);
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .nav-btn:hover { background: #ddd; }
-        .nav-btn.primary { background: var(--secondary); color: white; }
-        .nav-btn.primary:hover { background: #3db8af; }
-
-        .counter { font-weight: bold; color: #666; }
-
-        /* QUIZ */
-        .quiz-question {
-            font-size: 1.5em;
-            text-align: center;
-            margin-bottom: 25px;
-            font-weight: 700;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .option-btn {
-            background: white;
-            color: var(--dark);
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .option-btn:hover { border-color: var(--secondary); background: #f0fbfb; }
-        .option-btn.correct { background: var(--secondary); color: white; border-color: var(--secondary); }
-        .option-btn.wrong { background: var(--primary); color: white; border-color: var(--primary); }
-
-        #next-quiz-btn {
-            display: none;
-            width: 100%;
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--dark);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* PROGRESS */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .stat-card {
-            background: var(--light);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .stat-card h3 { margin: 0 0 10px 0; color: #666; font-size: 14px; text-transform: uppercase; }
-        .stat-card .value { font-size: 2.5em; font-weight: 900; color: var(--dark); }
-        .stat-card .value.accent { color: var(--primary); }
-
-        .progress-bar-container {
-            width: 100%;
-            background: #ddd;
-            border-radius: 10px;
-            height: 20px;
-            margin-top: 15px;
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background: var(--secondary);
-            width: 0%;
-            transition: width 0.5s;
-        }
-        
-        .reset-btn {
-            margin-top: 30px;
-            width: 100%;
-            padding: 15px;
-            background: #eee;
-            color: #666;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .reset-btn:hover { background: #ddd; }
-
-        @media (max-width: 500px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-<div class="app-container">
-    <h1>🇩🇪 100 Verbs Mastery</h1>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('flashcards')">🃏 Flashcards</button>
-        <button class="tab-btn" onclick="switchTab('quiz')">🧠 Quiz</button>
-        <button class="tab-btn" onclick="switchTab('progress')">📊 Progress</button>
+    <!-- Header / Stats -->
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Kapitel 1: Guten Tag!</h1>
+        <p class="text-gray-600">Card <span id="current-index">1</span> of <span id="total-cards">0</span></p>
     </div>
 
-    <!-- FLASHCARDS SECTION -->
-    <div id="flashcards" class="section active">
-        <div class="flashcard-wrapper" onclick="flipCard()">
-            <div class="flashcard" id="card">
-                <div class="card-face card-front">
-                    <div class="word" id="fc-de">Wort</div>
-                    <div class="hint">Click to flip</div>
-                </div>
-                <div class="card-face card-back">
-                    <div class="word" id="fc-en">Word</div>
+    <!-- Flashcard Container -->
+    <div class="w-full max-w-md perspective-1000" onclick="flipCard()">
+        <div id="flashcard-inner" class="relative w-full h-96 transition-transform duration-500 transform-style-preserve-3d cursor-pointer shadow-xl rounded-2xl">
+            
+            <!-- Front of Card (German) -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 bg-white rounded-2xl backface-hidden border border-gray-200">
+                <span id="card-difficulty" class="absolute top-4 right-4 text-xs font-bold uppercase tracking-wider text-gray-400">LOW</span>
+                <button onclick="playAudio(event)" class="absolute top-4 left-4 p-2 bg-blue-100 rounded-full hover:bg-blue-200 transition text-xl">
+                    🔊
+                </button>
+                
+                <p id="card-pos" class="text-sm text-gray-500 italic mb-2">Noun</p>
+                <h2 class="text-4xl font-bold text-gray-900">
+                    <span id="card-article" class="text-blue-500 font-normal mr-2">das</span>
+                    <span id="card-word">Wort</span>
+                </h2>
+                <p class="text-sm text-gray-400 mt-8">(Click to flip)</p>
+            </div>
+
+            <!-- Back of Card (English) -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 bg-blue-50 rounded-2xl backface-hidden rotate-y-180 border border-blue-200">
+                <h2 id="card-translation" class="text-3xl font-bold text-gray-900 mb-6 text-center">
+                    word
+                </h2>
+                <div class="text-center">
+                    <p id="card-ex-de" class="text-lg text-gray-800 font-medium mb-2">
+                        "Beispiel"
+                    </p>
+                    <p id="card-ex-en" class="text-sm text-gray-500 italic">
+                        "Example"
+                    </p>
                 </div>
             </div>
-        </div>
-        <div class="controls">
-            <button class="nav-btn" onclick="prevCard()">← Prev</button>
-            <div class="counter"><span id="card-index">1</span> / 100</div>
-            <button class="nav-btn primary" onclick="nextCard()">Next →</button>
+
         </div>
     </div>
 
-    <!-- QUIZ SECTION -->
-    <div id="quiz" class="section">
-        <div class="quiz-question">What is the meaning of "<span id="quiz-word" style="color:var(--primary);"></span>"?</div>
-        <div class="options-grid" id="quiz-options">
-            <!-- Buttons injected by JS -->
-        </div>
-        <button id="next-quiz-btn" onclick="loadQuiz()">Next Question →</button>
+    <!-- Navigation Buttons -->
+    <div class="flex gap-4 mt-8">
+        <button onclick="prevCard()" class="px-6 py-3 bg-white text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition shadow">
+            &larr; Previous
+        </button>
+        <button onclick="nextCard()" class="px-6 py-3 bg-blue-500 text-white font-semibold rounded-xl hover:bg-blue-600 transition shadow-lg shadow-blue-500/30">
+            Next &rarr;
+        </button>
     </div>
 
-    <!-- PROGRESS SECTION -->
-    <div id="progress" class="section">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Cards Viewed</h3>
-                <div class="value" id="stat-viewed">0</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill" id="bar-viewed"></div>
-                </div>
-            </div>
-            <div class="stat-card">
-                <h3>Quiz Accuracy</h3>
-                <div class="value accent" id="stat-accuracy">0%</div>
-                <div style="font-size: 12px; color: #888; margin-top: 10px;">
-                    <span id="stat-correct">0</span> correct out of <span id="stat-total">0</span>
-                </div>
-            </div>
-        </div>
-        <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
-    </div>
-</div>
+    <!-- JavaScript Logic -->
+    <script>
+        // The Chapter 1 Vocabulary Data
+        const vocabulary = [
+            { word: "Bulgarisch", article: "das", partOfSpeech: "Noun", translation: "Bulgarian", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Deutsch", article: "das", partOfSpeech: "Noun", translation: "German", exampleSentence: "Ich spreche Deutsch.", exampleTranslation: "I speak German.", difficultyLevel: "LOW" },
+            { word: "Englisch", article: "das", partOfSpeech: "Noun", translation: "English", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "gut", article: null, partOfSpeech: "Adjective", translation: "good", exampleSentence: "Guten Tag!", exampleTranslation: "Good day!", difficultyLevel: "LOW" },
+            { word: "guten Tag", article: null, partOfSpeech: "Phrase", translation: "Good day! Hello!", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Indonesisch", article: "das", partOfSpeech: "Noun", translation: "Indonesian", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "international", article: null, partOfSpeech: "Adjective", translation: "international", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Italienisch", article: "das", partOfSpeech: "Noun", translation: "Italian", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Japanisch", article: "das", partOfSpeech: "Noun", translation: "Japanese", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Russisch", article: "das", partOfSpeech: "Noun", translation: "Russian", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Serbisch", article: "das", partOfSpeech: "Noun", translation: "Serbian", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "Sie", article: null, partOfSpeech: "Pronoun", translation: "you (formal)", exampleSentence: "Ordnen Sie zu.", exampleTranslation: "Match.", difficultyLevel: "LOW" },
+            { word: "Türkisch", article: "das", partOfSpeech: "Noun", translation: "Turkish", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Ungarisch", article: "das", partOfSpeech: "Noun", translation: "Hungarian", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "was", article: null, partOfSpeech: "Pronoun", translation: "what?", exampleSentence: "Was ist das?", exampleTranslation: "What is that?", difficultyLevel: "LOW" },
+            { word: "zuordnen", article: null, partOfSpeech: "Verb", translation: "to assign, to match", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "zusammengehören", article: null, partOfSpeech: "Verb", translation: "to fit together", exampleSentence: "", exampleTranslation: "", difficultyLevel: "HIGH" },
+            { word: "Autobahn", article: "die", partOfSpeech: "Noun", translation: "highway", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Butterbrot", article: "das", partOfSpeech: "Noun", translation: "sandwich", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Flasche", article: "die", partOfSpeech: "Noun", translation: "bottle", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Handtuch", article: "das", partOfSpeech: "Noun", translation: "towel", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "Kindergarten", article: "der", partOfSpeech: "Noun", translation: "kindergarten", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Koffer", article: "der", partOfSpeech: "Noun", translation: "suitcase", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Kranke", article: "der/die", partOfSpeech: "Noun", translation: "sick person", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "Nudel", article: "die", partOfSpeech: "Noun", translation: "noodle", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Würstchen", article: "das", partOfSpeech: "Noun", translation: "sausage", exampleSentence: "\"Würstchen\" heißt auf Italienisch \"wurstel\".", exampleTranslation: "\"Sausage\" in Italian is called \"wurstel\".", difficultyLevel: "LOW" },
+            { word: "auf", article: null, partOfSpeech: "Preposition", translation: "in", exampleSentence: "\"Würstchen\" heißt auf Italienisch \"wurstel\".", exampleTranslation: "\"Sausage\" in Italian is called \"wurstel\".", difficultyLevel: "MEDIUM" },
+            { word: "heißen", article: null, partOfSpeech: "Verb", translation: "to be called", exampleSentence: "Ich heiße Niklas.", exampleTranslation: "My name is Niklas.", difficultyLevel: "LOW" },
+            { word: "Ihr / Ihre", article: null, partOfSpeech: "Pronoun", translation: "your (formal)", exampleSentence: "Wie heißen die Wörter in Ihrer Sprache?", exampleTranslation: "What are the words called in your language?", difficultyLevel: "MEDIUM" },
+            { word: "in", article: null, partOfSpeech: "Preposition", translation: "in", exampleSentence: "Wie heißen die Wörter in Ihrer Sprache?", exampleTranslation: "What are the words called in your language?", difficultyLevel: "LOW" },
+            { word: "Spanisch", article: "das", partOfSpeech: "Noun", translation: "Spanish", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "Sprache", article: "die", partOfSpeech: "Noun", translation: "language", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "wie", article: null, partOfSpeech: "Pronoun", translation: "how / what", exampleSentence: "Wie heißen die Wörter in Ihrer Sprache?", exampleTranslation: "What are the words called in your language?", difficultyLevel: "LOW" },
+            { word: "Wort", article: "das", partOfSpeech: "Noun", translation: "word", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "andere", article: null, partOfSpeech: "Adjective", translation: "other", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "deutsch", article: null, partOfSpeech: "Adjective", translation: "German", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "ein / eine", article: null, partOfSpeech: "Article", translation: "a / an", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" },
+            { word: "kennen", article: null, partOfSpeech: "Verb", translation: "to know", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "Kursplakat", article: "das", partOfSpeech: "Noun", translation: "course poster", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "machen", article: null, partOfSpeech: "Verb", translation: "to make", exampleSentence: "Machen Sie ein Kursplakat.", exampleTranslation: "Make a course poster.", difficultyLevel: "LOW" },
+            { word: "sammeln", article: null, partOfSpeech: "Verb", translation: "to collect", exampleSentence: "", exampleTranslation: "", difficultyLevel: "MEDIUM" },
+            { word: "und", article: null, partOfSpeech: "Conjunction", translation: "and", exampleSentence: "", exampleTranslation: "", difficultyLevel: "LOW" }
+        ];
 
-<script>
-    const words = [
-  { de: "ablehnen", en: "to reject" },
-  { de: "anerkennen", en: "to recognize / acknowledge" },
-  { de: "befürworten", en: "to support / advocate" },
-  { de: "behaupten", en: "to claim / assert" },
-  { de: "begründen", en: "to justify / give reasons for" },
-  { de: "beurteilen", en: "to assess / judge" },
-  { de: "bewerten", en: "to evaluate" },
-  { de: "bezweifeln", en: "to doubt (something)" },
-  { de: "diskutieren (über)", en: "to discuss" },
-  { de: "einwenden", en: "to object" },
-  { de: "erörtern", en: "to debate / discuss in depth" },
-  { de: "hinweisen (auf)", en: "to point out" },
-  { de: "kritisieren", en: "to criticize" },
-  { de: "rechtfertigen", en: "to justify / vindicate" },
-  { de: "schlussfolgern", en: "to conclude" },
-  { de: "überzeugen", en: "to convince" },
-  { de: "vermuten", en: "to suspect / assume" },
-  { de: "widersprechen", en: "to contradict" },
-  { de: "zustimmen", en: "to agree" },
-  { de: "zweifeln (an)", en: "to have doubts (about)" },
-  { de: "analysieren", en: "to analyze" },
-  { de: "anwenden", en: "to apply (e.g., a method or formula)" },
-  { de: "aufbauen", en: "to build up / structure" },
-  { de: "ausführen", en: "to execute / carry out" },
-  { de: "berechnen", en: "to calculate" },
-  { de: "beweisen", en: "to prove" },
-  { de: "durchführen", en: "to carry out / conduct (e.g., an experiment)" },
-  { de: "entwickeln", en: "to develop" },
-  { de: "erforschen", en: "to research / investigate" },
-  { de: "ermitteln", en: "to ascertain / determine" },
-  { de: "erzeugen", en: "to generate / produce" },
-  { de: "feststellen", en: "to establish / determine" },
-  { de: "herstellen", en: "to manufacture / produce" },
-  { de: "konstruieren", en: "to construct / design" },
-  { de: "messen", en: "to measure" },
-  { de: "prüfen", en: "to check / examine" },
-  { de: "simulieren", en: "to simulate" },
-  { de: "steuern", en: "to control / steer" },
-  { de: "überprüfen", en: "to verify / review" },
-  { de: "verarbeiten", en: "to process (data or materials)" },
-  { de: "anpassen", en: "to adapt / adjust" },
-  { de: "auslösen", en: "to trigger" },
-  { de: "beeinflussen", en: "to influence" },
-  { de: "beitragen (zu)", en: "to contribute (to)" },
-  { de: "beschleunigen", en: "to accelerate" },
-  { de: "bewirken", en: "to cause / bring about" },
-  { de: "entstehen", en: "to originate / arise" },
-  { de: "erhöhen", en: "to increase / raise" },
-  { de: "ersetzen", en: "to replace" },
-  { de: "fördern", en: "to promote / support" },
-  { de: "führen (zu)", en: "to lead (to)" },
-  { de: "reduzieren", en: "to reduce" },
-  { de: "sinken", en: "to sink / decrease (intransitive)" },
-  { de: "steigen", en: "to rise / increase (intransitive)" },
-  { de: "verändern", en: "to change / alter" },
-  { de: "verbessern", en: "to improve" },
-  { de: "verringern", en: "to decrease / lessen" },
-  { de: "verursachen", en: "to cause" },
-  { de: "wandeln", en: "to transform" },
-  { de: "zunehmen", en: "to increase / grow (e.g., weight, intensity)" },
-  { de: "ableiten", en: "to derive / deduce" },
-  { de: "auffallen", en: "to stand out / be noticeable" },
-  { de: "begreifen", en: "to comprehend" },
-  { de: "berücksichtigen", en: "to consider / take into account" },
-  { de: "definieren", en: "to define" },
-  { de: "entdecken", en: "to discover" },
-  { de: "erfahren", en: "to experience / learn (a fact)" },
-  { de: "erfassen", en: "to grasp / capture (conceptually or digitally)" },
-  { de: "erkennen", en: "to recognize" },
-  { de: "identifizieren", en: "to identify" },
-  { de: "interpretieren", en: "to interpret" },
-  { de: "klären", en: "to clarify" },
-  { de: "merken", en: "to notice / remember" },
-  { de: "nachvollziehen", en: "to comprehend / follow (a thought process)" },
-  { de: "unterscheiden", en: "to distinguish / differentiate" },
-  { de: "vergleichen", en: "to compare" },
-  { de: "vernachlässigen", en: "to neglect" },
-  { de: "voraussetzen", en: "to assume / require as a prerequisite" },
-  { de: "wahrnehmen", en: "to perceive" },
-  { de: "zusammenfassen", en: "to summarize" },
-  { de: "abstimmen", en: "to coordinate / vote" },
-  { de: "anfordern", en: "to request (officially)" },
-  { de: "ankündigen", en: "to announce" },
-  { de: "beauftragen", en: "to assign / commission" },
-  { de: "benachrichtigen", en: "to notify" },
-  { de: "berichten", en: "to report" },
-  { de: "bestätigen", en: "to confirm" },
-  { de: "betreuen", en: "to supervise / look after (a project or person)" },
-  { de: "bewerben (sich)", en: "to apply (for a job or university program)" },
-  { de: "einreichen", en: "to submit (documents)" },
-  { de: "empfehlen", en: "to recommend" },
-  { de: "fordern", en: "to demand" },
-  { de: "genehmigen", en: "to approve / authorize" },
-  { de: "informieren", en: "to inform" },
-  { de: "mitteilen", en: "to communicate / let know" },
-  { de: "organisieren", en: "to organize" },
-  { de: "präsentieren", en: "to present" },
-  { de: "teilnehmen (an)", en: "to participate (in)" },
-  { de: "vereinbaren", en: "to arrange / agree upon (e.g., an appointment)" },
-  { de: "vertreten", en: "to represent" }
-    ];
+        let currentIndex = 0;
+        let isFlipped = false;
 
-    // STATE
-    let currentCardIndex = 0;
-    let viewedCards = new Set([0]);
-    let quizTotal = 0;
-    let quizCorrect = 0;
-    let currentQuizAnswer = "";
+        // Elements
+        const flashcardInner = document.getElementById('flashcard-inner');
+        const cardDifficulty = document.getElementById('card-difficulty');
+        const cardPos = document.getElementById('card-pos');
+        const cardArticle = document.getElementById('card-article');
+        const cardWord = document.getElementById('card-word');
+        const cardTranslation = document.getElementById('card-translation');
+        const cardExDe = document.getElementById('card-ex-de');
+        const cardExEn = document.getElementById('card-ex-en');
+        const currentIndexDisplay = document.getElementById('current-index');
+        const totalCardsDisplay = document.getElementById('total-cards');
 
-    // INIT
-    window.onload = () => {
-        loadCard(currentCardIndex);
-        loadQuiz();
-        updateProgress();
-    };
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            totalCardsDisplay.innerText = vocabulary.length;
+            loadCard(currentIndex);
+        });
 
-    // TABS LOGIC
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-        
-        event.target.classList.add('active');
-        document.getElementById(tabId).classList.add('active');
+        // Load specific card
+        function loadCard(index) {
+            const card = vocabulary[index];
+            
+            // Update Text
+            cardDifficulty.innerText = card.difficultyLevel;
+            cardPos.innerText = card.partOfSpeech;
+            
+            if (card.article) {
+                cardArticle.innerText = card.article;
+                cardArticle.style.display = 'inline';
+            } else {
+                cardArticle.style.display = 'none';
+            }
 
-        if(tabId === 'progress') updateProgress();
-    }
+            cardWord.innerText = card.word;
+            cardTranslation.innerText = card.translation;
+            
+            if (card.exampleSentence) {
+                cardExDe.innerText = `"${card.exampleSentence}"`;
+                cardExEn.innerText = `"${card.exampleTranslation}"`;
+                cardExDe.style.display = 'block';
+                cardExEn.style.display = 'block';
+            } else {
+                cardExDe.style.display = 'none';
+                cardExEn.style.display = 'none';
+            }
 
-    // FLASHCARD LOGIC
-    function loadCard(index) {
-        const card = document.getElementById('card');
-        card.classList.remove('flipped');
-        
-        setTimeout(() => {
-            document.getElementById('fc-de').innerText = words[index].de;
-            document.getElementById('fc-en').innerText = words[index].en;
-            document.getElementById('card-index').innerText = index + 1;
-        }, 150); // wait for flip animation to reset if it was flipped
-
-        viewedCards.add(index);
-    }
-
-    function flipCard() {
-        document.getElementById('card').classList.toggle('flipped');
-    }
-
-    function nextCard() {
-        if (currentCardIndex < words.length - 1) {
-            currentCardIndex++;
-            loadCard(currentCardIndex);
-        } else {
-            currentCardIndex = 0; // loop back
-            loadCard(currentCardIndex);
+            // Update Counter
+            currentIndexDisplay.innerText = index + 1;
         }
-    }
 
-    function prevCard() {
-        if (currentCardIndex > 0) {
-            currentCardIndex--;
-            loadCard(currentCardIndex);
-        } else {
-            currentCardIndex = words.length - 1;
-            loadCard(currentCardIndex);
-        }
-    }
-
-    // QUIZ LOGIC
-    function loadQuiz() {
-        const btnNext = document.getElementById('next-quiz-btn');
-        const optionsContainer = document.getElementById('quiz-options');
-        
-        btnNext.style.display = 'none';
-        optionsContainer.innerHTML = ''; // clear old
-
-        // Pick correct word
-        const correctIndex = Math.floor(Math.random() * words.length);
-        const correctWord = words[correctIndex];
-        currentQuizAnswer = correctWord.en;
-
-        document.getElementById('quiz-word').innerText = correctWord.de;
-
-        // Generate 3 wrong options
-        let options = [correctWord.en];
-        while (options.length < 4) {
-            let wrongOption = words[Math.floor(Math.random() * words.length)].en;
-            if (!options.includes(wrongOption)) {
-                options.push(wrongOption);
+        // Flip Card Logic
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                flashcardInner.classList.add('rotate-y-180');
+            } else {
+                flashcardInner.classList.remove('rotate-y-180');
             }
         }
 
-        // Shuffle options
-        options.sort(() => Math.random() - 0.5);
-
-        // Render options
-        options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(btn, opt);
-            optionsContainer.appendChild(btn);
-        });
-    }
-
-    function checkAnswer(btn, selected) {
-        // Prevent multiple clicks
-        const allBtns = document.querySelectorAll('.option-btn');
-        allBtns.forEach(b => b.disabled = true);
-
-        quizTotal++;
-        
-        if (selected === currentQuizAnswer) {
-            btn.classList.add('correct');
-            quizCorrect++;
-        } else {
-            btn.classList.add('wrong');
-            // highlight correct one
-            allBtns.forEach(b => {
-                if(b.innerText === currentQuizAnswer) b.classList.add('correct');
-            });
+        // Next Card Logic
+        function nextCard() {
+            if (isFlipped) flipCard(); // Unflip before changing
+            
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex >= vocabulary.length) currentIndex = 0; // Loop back to start
+                loadCard(currentIndex);
+            }, isFlipped ? 300 : 0); // Wait for unflip animation if needed
         }
 
-        document.getElementById('next-quiz-btn').style.display = 'block';
-    }
-
-    // PROGRESS LOGIC
-    function updateProgress() {
-        const viewedCount = viewedCards.size;
-        document.getElementById('stat-viewed').innerText = viewedCount;
-        document.getElementById('bar-viewed').style.width = (viewedCount / words.length * 100) + '%';
-
-        document.getElementById('stat-correct').innerText = quizCorrect;
-        document.getElementById('stat-total').innerText = quizTotal;
-
-        let acc = 0;
-        if (quizTotal > 0) acc = Math.round((quizCorrect / quizTotal) * 100);
-        document.getElementById('stat-accuracy').innerText = acc + '%';
-    }
-    
-    function resetProgress() {
-        if(confirm("Are you sure you want to reset all progress?")) {
-            viewedCards = new Set([currentCardIndex]);
-            quizTotal = 0;
-            quizCorrect = 0;
-            updateProgress();
+        // Previous Card Logic
+        function prevCard() {
+            if (isFlipped) flipCard(); // Unflip before changing
+            
+            setTimeout(() => {
+                currentIndex--;
+                if (currentIndex < 0) currentIndex = vocabulary.length - 1; // Loop back to end
+                loadCard(currentIndex);
+            }, isFlipped ? 300 : 0);
         }
-    }
-</script>
+
+        // Audio Pronunciation
+        function playAudio(event) {
+            event.stopPropagation(); // Stop the card from flipping when clicking the button
+            const word = vocabulary[currentIndex].word;
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'de-DE'; // German language code
+            window.speechSynthesis.speak(utterance);
+        }
+    </script>
 </body>
 </html>
